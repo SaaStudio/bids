@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+
+<f:view
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+>
+	<h:head />
+	<h:body>
+		<h1><h:outputText value="Принимаем заявки:" /></h1>
+		
+		<p:separator />
+		
+		<h:form id="inputform">
+     
+		<p:growl id="msg" showDetail="true"/>
+		
+			<h:panelGrid id="panel" columns="2" style="margin-bottom:10px" cellpadding="5">
+
+		        <p:outputLabel for="error" value="Код ошибки:" />
+		        <p:autoComplete id="error" value="#{inputForm.errorCode}" completeMethod="#{inputForm.completeErrorText}" required="true" requiredMessage="Поле 'Код ошибки' обязательно для заполнения!"/>
+
+				<h:outputLabel for="fault" value="Неисправность:" />
+				<p:selectOneMenu id="fault" value="#{inputForm.fault}" requiredMessage="Поле 'Неисправность' обязательно для заполнения!" >
+					<f:selectItems value="#{inputForm.faultList}" />
+		        </p:selectOneMenu>
+	
+	        	<h:outputLabel for="date" value="Дата возникновения:" />
+		        <p:calendar for="date" value="#{inputForm.date}" required="true" requiredMessage="Поле 'Дата возникновения' обязательно для заполнения!"/>
+
+		        <h:outputLabel for="phone" value="Ваш намер телефона:" />
+		        <p:inputMask id="phone" value="#{inputForm.phone}" mask="(999) 999-99-99"  required="true" requiredMessage="Поле 'Телефон' обязательно для заполнения!"/>
+
+        		<h:outputLabel for="call" value="Перезвонить?" />
+				<p:selectBooleanCheckbox id="call" value="#{inputForm.isCall}" />
+
+			</h:panelGrid>
+               
+            <p:commandButton value="Подать заявку" id="sub" actionListener="#{inputForm.buttonAction}" styleClass="ui-priority-primary" update=":inputform" />
+    		
+    		<br />
+    		<br />
+    		<br />
+
+    		<h1><h:outputText value="Список заявок:" /></h1>
+
+
+		    <p:dataTable var="bid" value="#{lazyBidView.lazyModel}" paginator="true" rows="10" editable="true"
+		                 paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+		                 rowsPerPageTemplate="5,10,15,20" selectionMode="single" selection="#{lazyBidView.selectedBid}" 
+		                 id="bidTable" lazy="true">
+
+	       		<p:ajax event="rowEdit" listener="#{bidEditView.onRowEdit}" update=":inputform:msg" />
+	       		<p:ajax event="rowEditCancel" listener="#{bidEditView.onRowCancel}" update=":inputform:msg" />
+
+		        <p:column headerText="№" sortBy="#{bid.id}" filterBy="#{bid.id}">
+		            <h:outputText value="#{bid.id}" />
+		        </p:column>
+		        
+		        <p:column headerText="Код ошибки" sortBy="#{bid.error}" filterBy="#{bid.error}">
+		        	<p:cellEditor>
+	               		<f:facet name="output">
+	               			<h:outputText value="#{bid.error}" />
+	               		</f:facet>
+	               		<f:facet name="input">
+	               			<p:autoComplete id="error" value="#{bid.error}" completeMethod="#{inputForm.completeErrorText}" required="true" requiredMessage="Поле 'Код ошибки' обязательно для заполнения!"/>
+	               		</f:facet>
+	           		</p:cellEditor>
+		        </p:column>
+		        
+		       <p:column headerText="Неисправность" sortBy="#{bid.fault}" filterBy="#{bid.fault}">
+	           		<p:cellEditor>
+	              		<f:facet name="output"><h:outputText value="#{bid.fault}" /></f:facet>
+	               		<f:facet name="input">
+	                   		<h:selectOneMenu value="#{bid.fault}" style="width:100%" requiredMessage="Поле 'Неисправность' обязательно для заполнения!">
+	                       		<f:selectItems value="#{inputForm.faultList}" />
+	                   		</h:selectOneMenu>
+	               		</f:facet>
+	           		</p:cellEditor>
+	       		</p:column>
+		        
+		        
+		        <p:column headerText="Дата" sortBy="#{bid.simpleDate}" filterBy="#{bid.simpleDate}">
+		        	<p:cellEditor>
+			        	<f:facet name="output">
+			            	<h:outputText value="#{bid.simpleDate}" />
+			            </f:facet>
+			            <f:facet name="input">
+			            	<p:calendar for="date" value="#{bid.date}" required="true" requiredMessage="Поле 'Дата возникновения' обязательно для заполнения!"/>
+		            	</f:facet>
+		            </p:cellEditor>
+		        </p:column>
+		        
+		        <p:column headerText="Телефон" sortBy="#{bid.simplePhone}" filterBy="#{bid.simplePhone}">
+		        	<p:cellEditor>
+			        	<f:facet name="output">
+			        		<h:outputText value="#{bid.simplePhone}" />
+			        	</f:facet>
+			        	<f:facet name="input">
+			        		<p:inputMask id="phone" value="#{bid.simplePhone}" mask="(999) 999-99-99" />
+		            	</f:facet>
+		            </p:cellEditor>
+		        </p:column>
+		        
+		        <p:column headerText="Звонок" sortBy="#{bid.simpleCall}" filterBy="#{bid.simpleCall}">
+		        	<p:cellEditor>
+			        	<f:facet name="output">
+		            		<h:outputText value="#{bid.simpleCall}" />
+		            	</f:facet>
+			        	<f:facet name="input">
+			        		<h:selectOneMenu value="#{bid.simpleCall}" style="width:100%">
+	                       		<f:selectItems value="#{inputForm.callList}" />
+	                   		</h:selectOneMenu>
+			        	</f:facet>
+			        </p:cellEditor>
+		        </p:column>
+		        
+		        <p:column style="width:32px">
+	           		<p:rowEditor />
+	       		</p:column>
+	       		
+		    </p:dataTable>
+
+		</h:form>
+		
+		
+	</h:body>
+</f:view>

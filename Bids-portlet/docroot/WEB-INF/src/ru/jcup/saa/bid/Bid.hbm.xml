@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+  <class name="ru.jcup.saa.bid.Bid" table="bids">
+    <id column="id" name="id" type="java.lang.Long">
+      <generator class="increment"/>
+    </id>
+    <property column="error" name="error" type="java.lang.String"/>
+    <property column="fault" name="fault" type="java.lang.String"/>
+    <property column="date" name="date" type="java.util.Date"/>
+    <property column="phone" name="phone" type="java.lang.Long"/>
+    <property name="isCall" column="isCall" type="boolean"/>
+  
+  </class>
+</hibernate-mapping>
